@@ -11,17 +11,21 @@ function App() {
   const [recipeData, setRecipeData] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState(null);
-
+  const [isLoaded, setIsLoaded] = useState(false); // Add this state
+console.log(isLoaded)
   useEffect(() => {
-    const savedRecipes = JSON.parse(localStorage.getItem("recipes"));
-    if (savedRecipes) {
-      setRecipeData(savedRecipes);
-    }
+    const savedRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+    console.log("after get from localStorage:", savedRecipes);
+    setRecipeData(savedRecipes);
+    setIsLoaded(true); // Set the loading flag to true
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("recipes", JSON.stringify(recipeData));
-  }, [recipeData]);
+    if (isLoaded) { // Only update localStorage if the initial load is complete
+      console.log("Setting to localStorage:", recipeData);
+      localStorage.setItem("recipes", JSON.stringify(recipeData));
+    }
+  }, [recipeData,isLoaded]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
